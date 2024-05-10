@@ -35,6 +35,13 @@ const groupedCalls = computed(() => {
   return groups;
 });
 
+function openGoogleMaps(address) {
+  // Crie um link com as coordenadas do endereço para o Google Maps
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+  // Abra o link em uma nova aba
+  window.open(googleMapsLink, '_blank');
+}
+
 // Formatar a data para exibição
 function formatDate(dateString) {
   const date = new Date(parseInt(dateString));
@@ -105,6 +112,7 @@ async function deleteSelectedCalls() {
       <ul class="calls">
         <li v-for="item in group" :key="item.id" class="call-item">
           <div class="call-info">
+          
             <input
               v-if="isSelecting"
               type="checkbox"
@@ -119,6 +127,7 @@ async function deleteSelectedCalls() {
             </p>
             <p class="info">
               <span class="label">Endereço:</span> {{ item.local }}
+              <button @click="openGoogleMaps(item.local)" class="map-button"> <i class="mdi mdi-magnify"></i> Ver localização no mapa </button>
             </p>
             <audio controls :src="item.audio" class="audio">Áudio</audio>
           </div>
@@ -168,18 +177,39 @@ h2{
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
 }
+.map-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: 10px;
+  align-items: center;
+  display: flex
+}
 
+.map-button:hover {
+  background-color: #388e3c;
+}
 .call-info {
   margin-bottom: 10px;
 }
 
 .label {
   font-weight: bold;
-  color: '#fff',
+  color: '#fff';
+  font-size: 18px;
 }
 
 .info {
   margin: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-size: 16px;
+  gap: 5px;
 }
 
 .audio {
@@ -236,7 +266,8 @@ h2{
   margin-right: 10px;
 }
 
-.trash-icon {
+.trash-icon,
+.mdi-magnify {
   font-size: 24px; /* Altere o tamanho conforme necessário */
 }
 
