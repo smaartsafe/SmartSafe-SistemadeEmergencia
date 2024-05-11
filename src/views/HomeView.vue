@@ -127,8 +127,9 @@ async function deleteSelectedCalls() {
             </p>
             <p class="info">
               <span class="label">Endereço:</span> {{ item.local }}
-              <button @click="openGoogleMaps(item.local)" class="map-button"> <i class="mdi mdi-magnify"></i> Ver localização no mapa </button>
             </p>
+            <button @click="openGoogleMaps(item.local)" class="map-button"> <i class="mdi mdi-magnify"></i> Ver localização no mapa </button>
+
             <audio controls :src="item.audio" class="audio">Áudio</audio>
           </div>
         </li>
@@ -185,7 +186,6 @@ h2{
   border-radius: 5px;
   cursor: pointer;
   font-size: 12px;
-  margin-left: 10px;
   align-items: center;
   display: flex
 }
@@ -206,10 +206,9 @@ h2{
 .info {
   margin: 0;
   display: flex;
-  flex-direction: row;
-  align-items: center;
   font-size: 16px;
-  gap: 5px;
+  flex-direction: column;
+  margin-bottom: 7px;
 }
 
 .audio {
@@ -271,7 +270,7 @@ h2{
   font-size: 24px; /* Altere o tamanho conforme necessário */
 }
 
-@media (max-width: 480px) {
+@media only screen and (max-width: 768px) {
   .header{
     padding: 15px 0;
   }
@@ -284,6 +283,9 @@ h2{
   .select-button,
   .delete-button {
     font-size: 14px
+  }
+  .info{
+    flex-direction: column;
   }
 }
 </style>
