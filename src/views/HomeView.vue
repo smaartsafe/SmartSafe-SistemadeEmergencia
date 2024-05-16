@@ -89,6 +89,7 @@ async function deleteSelectedCalls() {
 
 <template>
   <div class="header">
+    <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px;">
     <h1 class="title">Lista de Chamadas</h1>
   </div>
   <main class="main">
@@ -145,6 +146,10 @@ async function deleteSelectedCalls() {
   text-align: center;
   padding: 20px 0;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
 }
 
 .title {
@@ -185,7 +190,7 @@ h2{
   padding: 0 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 12px;
+  font-size: 16px;
   align-items: center;
   display: flex
 }
