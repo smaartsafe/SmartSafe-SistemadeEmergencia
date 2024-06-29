@@ -35,11 +35,11 @@ const groupedCalls = computed(() => {
   return groups;
 });
 
-function openGoogleMaps(address) {
-  // Crie um link com as coordenadas do endereço para o Google Maps
-  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+function openGoogleMaps(latitude, longitude) {
+  // Crie um link com as coordenadas para o Google Maps
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
   // Abra o link em uma nova aba
-  window.open(googleMapsLink, '_blank');
+  window.open(googleMapsLink, "_blank");
 }
 
 // Formatar a data para exibição
@@ -89,7 +89,7 @@ async function deleteSelectedCalls() {
 
 <template>
   <div class="header">
-    <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px;">
+    <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px" />
     <h1 class="title">Lista de Chamadas</h1>
   </div>
   <main class="main">
@@ -113,7 +113,6 @@ async function deleteSelectedCalls() {
       <ul class="calls">
         <li v-for="item in group" :key="item.id" class="call-item">
           <div class="call-info">
-          
             <input
               v-if="isSelecting"
               type="checkbox"
@@ -129,7 +128,16 @@ async function deleteSelectedCalls() {
             <p class="info">
               <span class="label">Endereço:</span> {{ item.local }}
             </p>
-            <button @click="openGoogleMaps(item.local)" class="map-button"> <i class="mdi mdi-magnify"></i> Ver localização no mapa </button>
+            <p class="info">
+              <span class="label">Coordenadas:</span> {{ item.latitude }},
+              {{ item.longitude }}
+            </p>
+            <button
+              @click="openGoogleMaps(item.latitude, item.longitude)"
+              class="map-button"
+            >
+              <i class="mdi mdi-magnify"></i> Ver localização no mapa
+            </button>
 
             <audio controls :src="item.audio" class="audio">Áudio</audio>
           </div>
@@ -163,12 +171,10 @@ async function deleteSelectedCalls() {
   width: 90%;
   max-width: 800px;
   margin: 0 auto;
-
 }
-h2{
+h2 {
   font-weight: bolder;
   text-transform: uppercase;
-  
 }
 .calls {
   list-style: none;
@@ -192,7 +198,7 @@ h2{
   cursor: pointer;
   font-size: 16px;
   align-items: center;
-  display: flex
+  display: flex;
 }
 
 .map-button:hover {
@@ -204,7 +210,7 @@ h2{
 
 .label {
   font-weight: bold;
-  color: '#fff';
+  color: "#fff";
   font-size: 18px;
 }
 
@@ -276,10 +282,10 @@ h2{
 }
 
 @media only screen and (max-width: 768px) {
-  .header{
+  .header {
     padding: 15px 0;
   }
-  .title{
+  .title {
     font-size: 24px;
   }
   .main {
@@ -287,9 +293,9 @@ h2{
   }
   .select-button,
   .delete-button {
-    font-size: 14px
+    font-size: 14px;
   }
-  .info{
+  .info {
     flex-direction: column;
   }
 }
