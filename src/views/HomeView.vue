@@ -21,11 +21,16 @@ const datalist = useCollection(queryCalls);
 const newCallAlert = ref(false);
 const selectedCalls = ref([]);
 const isSelecting = ref(false);
+const searchQuery = ref(""); // Nova variável para armazenar a pesquisa
 
 // Agrupar chamadas por data
 const groupedCalls = computed(() => {
   const groups = {};
-  datalist.value.forEach((item) => {
+  const filteredCalls = datalist.value.filter((item) => 
+    item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) // Filtrar chamadas pelo nome
+  );
+
+  filteredCalls.forEach((item) => {
     const callDate = new Date(item.horario).setHours(0, 0, 0, 0);
     if (!groups[callDate]) {
       groups[callDate] = [];
@@ -36,13 +41,10 @@ const groupedCalls = computed(() => {
 });
 
 function openGoogleMaps(latitude, longitude) {
-  // Crie um link com as coordenadas para o Google Maps
   const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-  // Abra o link em uma nova aba
   window.open(googleMapsLink, "_blank");
 }
 
-// Formatar a data para exibição
 function formatDate(dateString) {
   const date = new Date(parseInt(dateString));
   const today = new Date();
@@ -58,14 +60,10 @@ function formatDate(dateString) {
   }
 }
 
-// Listener para detectar novas chamadas
 onSnapshot(callsCollection, (snapshot) => {
   snapshot.docChanges().forEach((change) => {
     if (change.type === "added") {
-      // Sinalizar que uma nova chamada chegou
       newCallAlert.value = true;
-
-      // Desativar o alerta após 2 segundos (para um total de 3 piscadas)
       setTimeout(() => {
         newCallAlert.value = false;
       }, 2000);
@@ -85,12 +83,20 @@ async function deleteSelectedCalls() {
     console.error("Error deleting calls:", error);
   }
 }
+
 </script>
 
 <template>
   <div class="header">
     <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px" />
     <h1 class="title">Lista de Chamadas</h1>
+    <!-- Barra de Pesquisa -->
+    <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Pesquisar por nome..."
+      class="search-bar"
+    />
   </div>
   <main class="main">
     <div v-if="newCallAlert" class="alert"></div>
@@ -147,6 +153,7 @@ async function deleteSelectedCalls() {
   </main>
 </template>
 
+
 <style scoped>
 .header {
   background-color: #9344fa;
@@ -166,12 +173,22 @@ async function deleteSelectedCalls() {
   margin: 0;
 }
 
+.search-bar {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+}
+
 .main {
   font-family: Arial, sans-serif;
   width: 90%;
   max-width: 800px;
   margin: 0 auto;
 }
+
 h2 {
   font-weight: bolder;
   text-transform: uppercase;
