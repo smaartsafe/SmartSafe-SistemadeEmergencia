@@ -91,12 +91,7 @@ async function deleteSelectedCalls() {
     <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px" />
     <h1 class="title">Lista de Chamadas</h1>
     <!-- Barra de Pesquisa -->
-    <input
-      v-model="searchQuery"
-      type="text"
-      placeholder="Pesquisar por nome..."
-      class="search-bar"
-    />
+    
   </div>
   <main class="main">
     <div v-if="newCallAlert" class="alert"></div>
@@ -108,10 +103,17 @@ async function deleteSelectedCalls() {
       >
         Selecionar Chamadas
       </button>
+      
       <button v-else @click="deleteSelectedCalls" class="delete-button">
         <i class="mdi mdi-trash-can trash-icon"></i> Apagar Chamadas
         Selecionadas
       </button>
+      <input
+      v-model="searchQuery"
+      type="text"
+      placeholder="Pesquisar por nome..."
+      class="search-bar"
+    />
     </div>
 
     <div v-for="(group, date) in groupedCalls" :key="date">
@@ -268,6 +270,8 @@ h2 {
 
 .options {
   margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between
 }
 
 .select-button,
