@@ -26,8 +26,8 @@ const searchQuery = ref(""); // Nova variável para armazenar a pesquisa
 // Agrupar chamadas por data
 const groupedCalls = computed(() => {
   const groups = {};
-  const filteredCalls = datalist.value.filter((item) => 
-    item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) // Filtrar chamadas pelo nome
+  const filteredCalls = datalist.value.filter(
+    (item) => item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) // Filtrar chamadas pelo nome
   );
 
   filteredCalls.forEach((item) => {
@@ -83,15 +83,13 @@ async function deleteSelectedCalls() {
     console.error("Error deleting calls:", error);
   }
 }
-
 </script>
 
 <template>
   <div class="header">
-    <img src="/src/assets/FundoSplash.png" alt="" style="width: 80px" />
-    <h1 class="title">Lista de Chamadas</h1>
+    <img src="/src/assets/FundoSplash.png" alt="" class="logo-tipo" />
+    <h1 class="title">Lista de Chamados</h1>
     <!-- Barra de Pesquisa -->
-    
   </div>
   <main class="main">
     <div v-if="newCallAlert" class="alert"></div>
@@ -103,17 +101,20 @@ async function deleteSelectedCalls() {
       >
         Selecionar Chamadas
       </button>
-      
+
       <button v-else @click="deleteSelectedCalls" class="delete-button">
         <i class="mdi mdi-trash-can trash-icon"></i> Apagar Chamadas
         Selecionadas
       </button>
-      <input
-      v-model="searchQuery"
-      type="text"
-      placeholder="Pesquisar por nome..."
-      class="search-bar"
-    />
+      <div class="search-container">
+        <i class="mdi mdi-magnify search-icon"></i>
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Pesquisar por nome..."
+          class="search-bar"
+        />
+      </div>
     </div>
 
     <div v-for="(group, date) in groupedCalls" :key="date">
@@ -155,8 +156,10 @@ async function deleteSelectedCalls() {
   </main>
 </template>
 
-
 <style scoped>
+.logo-tipo {
+  width: 80px;
+}
 .header {
   background-color: #9344fa;
   color: #fff;
@@ -175,13 +178,27 @@ async function deleteSelectedCalls() {
   margin: 0;
 }
 
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  max-width: 300px;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  font-size: 20px;
+  color: #888;
+}
+
 .search-bar {
-  padding: 8px;
+  padding: 8px 8px 8px 36px; /* Adiciona espaço para o ícone */
   border-radius: 4px;
   border: 1px solid #ddd;
   font-size: 16px;
   width: 100%;
-  max-width: 300px;
 }
 
 .main {
@@ -212,7 +229,7 @@ h2 {
   background-color: #4caf50;
   color: white;
   border: none;
-  padding: 0 10px;
+  padding: 10px;
   border-radius: 5px;
   cursor: pointer;
   font-size: 16px;
@@ -242,7 +259,7 @@ h2 {
 }
 
 .audio {
-  margin-top: 10px;
+  margin-top: 20px;
   display: block;
   width: 100%;
   border-radius: 5px;
@@ -271,7 +288,7 @@ h2 {
 .options {
   margin-bottom: 20px;
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .select-button,
@@ -294,7 +311,32 @@ h2 {
 }
 
 .call-checkbox {
-  margin-right: 10px;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #9344fa;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.call-checkbox:checked {
+  background-color: #9344fa;
+  border-color: #9344fa;
+}
+
+.call-checkbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 8px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -50%) rotate(45deg);
 }
 
 .trash-icon,
@@ -302,7 +344,7 @@ h2 {
   font-size: 24px; /* Altere o tamanho conforme necessário */
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (min-width: 480px) and (max-width: 768px) {
   .header {
     padding: 15px 0;
   }
@@ -314,10 +356,40 @@ h2 {
   }
   .select-button,
   .delete-button {
-    font-size: 14px;
+    font-size: 16px;
   }
   .info {
     flex-direction: column;
+  }
+}
+@media only screen and (max-width: 480px) {
+  .logo-tipo {
+    width: 70px;
+  }
+  .header {
+    padding: 10px 0;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .options {
+    gap: 20px;
+  }
+  .search-bar {
+    height: 40px;
+  }
+  .select-button {
+    font-size: 14px;
+  }
+  .delete-button {
+    font-size: 14px;
+    text-align: justify;
+  }
+  .main {
+    width: 90%;
+  }
+  .map-button {
+    padding: 10px;
   }
 }
 </style>
