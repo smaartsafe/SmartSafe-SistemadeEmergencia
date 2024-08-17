@@ -1,90 +1,3 @@
-<script setup>
-import { ref, computed } from "vue";
-import app from "@/domain/firebase";
-import {
-  collection,
-  getFirestore,
-  query,
-  orderBy,
-  onSnapshot,
-  doc,
-  deleteDoc,
-} from "firebase/firestore";
-import { useCollection } from "vuefire";
-import "@mdi/font/css/materialdesignicons.min.css";
-
-const db = getFirestore(app);
-const callsCollection = collection(db, "calls");
-const queryCalls = query(callsCollection, orderBy("horario", "desc"));
-const datalist = useCollection(queryCalls);
-
-const newCallAlert = ref(false);
-const selectedCalls = ref([]);
-const isSelecting = ref(false);
-const searchQuery = ref(""); // Nova variável para armazenar a pesquisa
-
-// Agrupar chamadas por data
-const groupedCalls = computed(() => {
-  const groups = {};
-  const filteredCalls = datalist.value.filter(
-    (item) => item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) // Filtrar chamadas pelo nome
-  );
-
-  filteredCalls.forEach((item) => {
-    const callDate = new Date(item.horario).setHours(0, 0, 0, 0);
-    if (!groups[callDate]) {
-      groups[callDate] = [];
-    }
-    groups[callDate].push(item);
-  });
-  return groups;
-});
-
-function openGoogleMaps(latitude, longitude) {
-  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-  window.open(googleMapsLink, "_blank");
-}
-
-function formatDate(dateString) {
-  const date = new Date(parseInt(dateString));
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
-
-  if (date.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
-    return "Hoje";
-  } else if (date.setHours(0, 0, 0, 0) === yesterday.setHours(0, 0, 0, 0)) {
-    return "Ontem";
-  } else {
-    return date.toLocaleDateString();
-  }
-}
-
-onSnapshot(callsCollection, (snapshot) => {
-  snapshot.docChanges().forEach((change) => {
-    if (change.type === "added") {
-      newCallAlert.value = true;
-      setTimeout(() => {
-        newCallAlert.value = false;
-      }, 2000);
-    }
-  });
-});
-
-async function deleteSelectedCalls() {
-  try {
-    selectedCalls.value.forEach((callId) => {
-      const callRef = doc(db, "calls", callId);
-      deleteDoc(callRef);
-    });
-    selectedCalls.value = [];
-    isSelecting.value = false;
-  } catch (error) {
-    console.error("Error deleting calls:", error);
-  }
-}
-</script>
-
 <template>
   <div class="header">
     <img src="/src/assets/FundoSplash.png" alt="" class="logo-tipo" />
@@ -155,6 +68,127 @@ async function deleteSelectedCalls() {
     </div>
   </main>
 </template>
+
+<script setup>
+import { ref, computed, onMounted } from "vue";
+import { app } from "../domain/firebase.js";
+import {
+  collection,
+  getFirestore,
+  query,
+  where,
+  orderBy,
+  onSnapshot,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
+import { useCollection } from "vuefire";
+import Cookies from "js-cookie"; // Importar js-cookie para manipulação de cookies
+import "@mdi/font/css/materialdesignicons.min.css";
+
+const db = getFirestore(app);
+const callsCollection = collection(db, "calls");
+
+// Obter cidade dos cookies
+const cityFilter = Cookies.get("selectedCity") || "";
+
+// Query filtrada pela cidade, se definida
+// Query ajustada para evitar múltiplos filtros de intervalo
+const queryCalls = computed(() => {
+  if (cityFilter.value) {
+    return query(
+      callsCollection,
+      where("local", ">=", cityFilter.value),
+      where("local", "<=", cityFilter.value + "\uf8ff"),
+      orderBy("horario", "desc")
+    );
+  } else {
+    return query(callsCollection, orderBy("horario", "desc"));
+  }
+});
+
+const datalist = useCollection(queryCalls);
+
+const newCallAlert = ref(false);
+const selectedCalls = ref([]);
+const isSelecting = ref(false);
+const searchQuery = ref(""); // Variável para armazenar a pesquisa
+
+// Função para extrair a cidade do campo local
+function extractCityFromLocal(local) {
+  const parts = local.split(", ");
+  if (parts.length >= 3) {
+    return parts[parts.length - 3]; // Assume que a cidade é a penúltima parte
+  }
+  return "";
+}
+
+// Agrupar chamadas por data e filtrar por cidade
+const groupedCalls = computed(() => {
+  const groups = {};
+  const filteredCalls = datalist.value.filter((item) => {
+    // Filtrar chamadas pelo nome e pela cidade
+    const city = extractCityFromLocal(item.local).toLowerCase();
+    return (
+      item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
+      (cityFilter === "" || city === cityFilter.toLowerCase())
+    );
+  });
+
+  filteredCalls.forEach((item) => {
+    const callDate = new Date(item.horario).setHours(0, 0, 0, 0);
+    if (!groups[callDate]) {
+      groups[callDate] = [];
+    }
+    groups[callDate].push(item);
+  });
+  return groups;
+});
+
+function openGoogleMaps(latitude, longitude) {
+  const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+  window.open(googleMapsLink, "_blank");
+}
+
+function formatDate(dateString) {
+  const date = new Date(parseInt(dateString));
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  if (date.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
+    return "Hoje";
+  } else if (date.setHours(0, 0, 0, 0) === yesterday.setHours(0, 0, 0, 0)) {
+    return "Ontem";
+  } else {
+    return date.toLocaleDateString();
+  }
+}
+
+onSnapshot(queryCalls.value, (snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === "added") {
+      newCallAlert.value = true;
+      setTimeout(() => {
+        newCallAlert.value = false;
+      }, 2000);
+    }
+  });
+});
+
+async function deleteSelectedCalls() {
+  try {
+    selectedCalls.value.forEach((callId) => {
+      const callRef = doc(db, "calls", callId);
+      deleteDoc(callRef);
+    });
+    selectedCalls.value = [];
+    isSelecting.value = false;
+  } catch (error) {
+    console.error("Error deleting calls:", error);
+  }
+}
+</script>
 
 <style scoped>
 .logo-tipo {
