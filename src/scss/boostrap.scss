@@ -1,0 +1,47 @@
+$primary: #9344fa; // Cor padrão roxa
+$secondary: #6c757d; // Cinza escuro
+$success: #28a745; // Verde padrão
+$info: #17a2b8; // Azul claro
+$warning: #ffc107; // Amarelo
+$danger: #dc3545; // Vermelho alerta
+$light: #f8f9fa; // Branco claro
+$dark: #343a40; // Preto escuro
+$dark-light: #e0e0e0;
+$body-color: #212529;
+$body-bg-secondary: #e9ecef; // Fundo cinza claro
+
+// Tipografia
+$font-family-sans-serif: 'Inter', system-ui;
+$font-size-base: 0.9rem;
+
+$h1-font-size: $font-size-base * 2;
+$h2-font-size: $font-size-base * 1.5;
+$h5-font-size: $font-size-base * 1.25;
+$h6-font-size: $font-size-base * 0.92;
+$headings-margin-bottom: 0 !default;
+$headings-font-weight: 600 !default;
+
+// Inputs e botões
+$input-bg: #f5f5f5;
+$input-focus-bg: $dark-light;
+$input-border-color: transparent;
+$input-border-width: 0;
+$input-box-shadow: none;
+$input-padding-y: 0.6rem;
+$input-font-weight: 500;
+$input-focus-box-shadow: 0;
+$input-transition: background-color 250ms;
+
+$btn-padding-y: $input-padding-y;
+$btn-font-weight: 600;
+
+// Ajustes para o rótulo do formulário
+.form-label {
+  margin: 0.35rem 0 !important;
+  font-size: 0.9em;
+  font-weight: 700;
+  color: $dark;
+}
+
+// Importar o Bootstrap com as variáveis personalizadas
+@import '../../node_modules/bootstrap/scss/bootstrap';

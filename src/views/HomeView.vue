@@ -1,72 +1,52 @@
 <template>
-  <div class="header">
-    <img src="/src/assets/FundoSplash.png" alt="" class="logo-tipo" />
-    <h1 class="title">Lista de Chamados</h1>
-    <!-- Barra de Pesquisa -->
-  </div>
-  <main class="main">
-    <div v-if="newCallAlert" class="alert"></div>
-    <div class="options">
-      <button
-        v-if="!isSelecting"
-        @click="isSelecting = true"
-        class="select-button"
-      >
-        Selecionar Chamadas
-      </button>
+  <div style="height: 100dvh;">
+    <header class="d-flex justify-content-center align-items-center bg-primary text-white py-3 rounded mb-4">
+      <img src="/src/assets/FundoSplash.png" alt="Logo" class="logo me-3" />
+      <h1 class="h4 mb-0 fw-bold">Lista de Chamados</h1>
+    </header>
 
-      <button v-else @click="deleteSelectedCalls" class="delete-button">
-        <i class="mdi mdi-trash-can trash-icon"></i> Apagar Chamadas
-        Selecionadas
-      </button>
-      <div class="search-container">
-        <i class="mdi mdi-magnify search-icon"></i>
-        <input
-          v-model="searchQuery"
-          type="text"
-          placeholder="Pesquisar por nome..."
-          class="search-bar"
-        />
+    <main class="container">
+      <div v-if="newCallAlert" class="alert alert-danger text-center mb-4">Novo chamado adicionado!</div>
+
+      <div class="d-flex align-items-center mb-3">
+        <button v-if="!isSelecting" @click="isSelecting = true" class="btn btn-outline-primary me-3">
+          Selecionar Chamadas
+        </button>
+        <button v-else @click="deleteSelectedCalls" class="btn btn-danger me-3 d-flex align-items-center gap-1">
+          <span class="material-symbols-rounded">
+            delete
+          </span>Apagar Selecionadas
+        </button>
+        <div class="input-group w-50">
+          <span class="input-group-text"><i class="mdi mdi-magnify"></i></span>
+          <input v-model="searchQuery" type="text" placeholder="Pesquisar por nome..." class="form-control" />
+        </div>
       </div>
-    </div>
 
-    <div v-for="(group, date) in groupedCalls" :key="date">
-      <h2>{{ formatDate(date) }}</h2>
-      <ul class="calls">
-        <li v-for="item in group" :key="item.id" class="call-item">
-          <div class="call-info">
-            <input
-              v-if="isSelecting"
-              type="checkbox"
-              v-model="selectedCalls"
-              :value="item.id"
-              class="call-checkbox"
-            />
-            <p class="info"><span class="label">Nome:</span> {{ item.nome }}</p>
-            <p class="info">
-              <span class="label">Data/Horário:</span>
-              {{ new Date(item.horario).toLocaleString() }}
-            </p>
-            <p class="info">
-              <span class="label">Endereço:</span> {{ item.local }}
-            </p>
-            <p class="info">
-              <span class="label">Coordenadas:</span> {{ item.latitude }},
-              {{ item.longitude }}
-            </p>
-            <button
-              @click="openGoogleMaps(item.latitude, item.longitude)"
-              class="map-button"
-            >
-              <i class="mdi mdi-magnify"></i> Ver localização no mapa
-            </button>
-
-            <audio controls :src="item.audio" class="audio">Áudio</audio>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </main>
+      <div v-for="(group, date) in groupedCalls" :key="date" class="mb-3">
+        <h2 class="h6 text-uppercase text-muted mb-2">{{ formatDate(date) }}</h2>
+        <ul class="list-unstyled">
+          <li v-for="item in group" :key="item.id" class="card mb-3 shadow-sm border-light">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="mb-0">{{ item.nome }}</h5>
+                <input v-if="isSelecting" type="checkbox" v-model="selectedCalls" :value="item.id"
+                  class="form-check-input" />
+              </div>
+              <p class="text-muted mb-1"><strong>Data/Horário:</strong> {{ new Date(item.horario).toLocaleString() }}
+              </p>
+              <p class="text-muted mb-1"><strong>Endereço:</strong> {{ item.local }}</p>
+              <p class="text-muted mb-2"><strong>Coordenadas:</strong> {{ item.latitude }}, {{ item.longitude }}</p>
+              <button @click="openGoogleMaps(item.latitude, item.longitude)" class="btn btn-outline-success btn-sm">
+                <i class="mdi mdi-map-marker"></i> Ver no mapa
+              </button>
+              <audio controls :src="item.audio" class="w-100 mt-3">Áudio</audio>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup>
@@ -83,17 +63,14 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useCollection } from "vuefire";
-import Cookies from "js-cookie"; // Importar js-cookie para manipulação de cookies
+import Cookies from "js-cookie";
 import "@mdi/font/css/materialdesignicons.min.css";
 
 const db = getFirestore(app);
 const callsCollection = collection(db, "calls");
 
-// Obter cidade dos cookies
 const cityFilter = Cookies.get("selectedCity") || "";
 
-// Query filtrada pela cidade, se definida
-// Query ajustada para evitar múltiplos filtros de intervalo
 const queryCalls = computed(() => {
   if (cityFilter.value) {
     return query(
@@ -112,22 +89,19 @@ const datalist = useCollection(queryCalls);
 const newCallAlert = ref(false);
 const selectedCalls = ref([]);
 const isSelecting = ref(false);
-const searchQuery = ref(""); // Variável para armazenar a pesquisa
+const searchQuery = ref("");
 
-// Função para extrair a cidade do campo local
 function extractCityFromLocal(local) {
   const parts = local.split(", ");
   if (parts.length >= 3) {
-    return parts[parts.length - 3]; // Assume que a cidade é a penúltima parte
+    return parts[parts.length - 3];
   }
   return "";
 }
 
-// Agrupar chamadas por data e filtrar por cidade
 const groupedCalls = computed(() => {
   const groups = {};
   const filteredCalls = datalist.value.filter((item) => {
-    // Filtrar chamadas pelo nome e pela cidade
     const city = extractCityFromLocal(item.local).toLowerCase();
     return (
       item.nome.toLowerCase().includes(searchQuery.value.toLowerCase()) &&
@@ -191,239 +165,23 @@ async function deleteSelectedCalls() {
 </script>
 
 <style scoped>
-.logo-tipo {
-  width: 80px;
-}
-.header {
-  background-color: #9344fa;
-  color: #fff;
-  text-align: center;
-  padding: 20px 0;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 20px;
-}
-
-.title {
-  font-size: 30px;
-  font-weight: bolder;
-  margin: 0;
-}
-
-.search-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  max-width: 300px;
-  width: 100%;
-}
-
-.search-icon {
-  position: absolute;
-  left: 10px;
-  font-size: 20px;
-  color: #888;
-}
-
-.search-bar {
-  padding: 8px 8px 8px 36px; /* Adiciona espaço para o ícone */
-  border-radius: 4px;
-  border: 1px solid #ddd;
-  font-size: 16px;
-  width: 100%;
-}
-
-.main {
-  font-family: Arial, sans-serif;
-  width: 90%;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-h2 {
-  font-weight: bolder;
-  text-transform: uppercase;
-}
-.calls {
-  list-style: none;
-  padding: 0;
-  margin-bottom: 40px;
-}
-
-.call-item {
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-.map-button {
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  padding: 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  align-items: center;
-  display: flex;
-}
-
-.map-button:hover {
-  background-color: #388e3c;
-}
-.call-info {
-  margin-bottom: 10px;
-}
-
-.label {
-  font-weight: bold;
-  color: "#fff";
-  font-size: 18px;
-}
-
-.info {
-  margin: 0;
-  display: flex;
-  font-size: 16px;
-  flex-direction: column;
-  margin-bottom: 7px;
-}
-
-.audio {
-  margin-top: 20px;
-  display: block;
-  width: 100%;
-  border-radius: 5px;
+.logo {
+  width: 50px;
 }
 
 .alert {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 0, 0, 0.6);
   animation: blink 1s linear infinite;
 }
 
 @keyframes blink {
+
   0%,
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0;
-  }
-}
-
-.options {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.select-button,
-.delete-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 10px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  align-items: center;
-  display: flex;
-  gap: 7px;
-  font-size: 16px;
-}
-
-.select-button:hover,
-.delete-button:hover {
-  background-color: #d32f2f;
-}
-
-.call-checkbox {
-  appearance: none;
-  width: 20px;
-  height: 20px;
-  border: 2px solid #9344fa;
-  border-radius: 4px;
-  position: relative;
-  cursor: pointer;
-  outline: none;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-.call-checkbox:checked {
-  background-color: #9344fa;
-  border-color: #9344fa;
-}
-
-.call-checkbox:checked::after {
-  content: "";
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  width: 8px;
-  height: 12px;
-  border: solid white;
-  border-width: 0 2px 2px 0;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-
-.trash-icon,
-.mdi-magnify {
-  font-size: 24px; /* Altere o tamanho conforme necessário */
-}
-
-@media only screen and (min-width: 480px) and (max-width: 768px) {
-  .header {
-    padding: 15px 0;
-  }
-  .title {
-    font-size: 24px;
-  }
-  .main {
-    width: 95%;
-  }
-  .select-button,
-  .delete-button {
-    font-size: 16px;
-  }
-  .info {
-    flex-direction: column;
-  }
-}
-@media only screen and (max-width: 480px) {
-  .logo-tipo {
-    width: 70px;
-  }
-  .header {
-    padding: 10px 0;
-  }
-  .title {
-    font-size: 24px;
-  }
-  .options {
-    gap: 20px;
-  }
-  .search-bar {
-    height: 40px;
-  }
-  .select-button {
-    font-size: 14px;
-  }
-  .delete-button {
-    font-size: 14px;
-    text-align: justify;
-  }
-  .main {
-    width: 90%;
-  }
-  .map-button {
-    padding: 10px;
   }
 }
 </style>

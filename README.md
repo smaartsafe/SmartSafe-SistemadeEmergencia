@@ -1,29 +1,39 @@
-# smartsafe-web
+# Projeto de Login e Lista de Chamados
 
-This template should help get you started developing with Vue 3 in Vite.
+Este projeto é uma aplicação em Vue.js que permite autenticação de usuários com o Firebase Authentication e exibe uma lista de chamados com base em uma cidade selecionada. Os chamados são carregados do Firebase Firestore, e há um sistema de filtragem por cidade e de exclusão de chamados.
 
-## Recommended IDE Setup
+## Tecnologias Utilizadas
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Vue.js**: Framework JavaScript para construir interfaces de usuário.
+- **Firebase**:
+  - **Authentication**: Para autenticação de usuários.
+  - **Firestore**: Para armazenamento dos chamados.
+- **Bootstrap**: Framework de CSS para estilização.
+- **Vue Router**: Gerenciamento de rotas para navegação entre páginas.
+- **LocalStorage e Cookies**: Para persistência de dados de login e cidade selecionada.
 
-## Customize configuration
+## Funcionalidades
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+- **Autenticação de Usuários**: Tela de login que valida e autentica o usuário com o Firebase Authentication.
+- **Persistência de Sessão**: Ao fazer login, o status do usuário é salvo no `localStorage` para que a sessão seja mantida mesmo após atualizar a página.
+- **Lista de Chamados**: Exibe chamados com base na cidade selecionada pelo usuário no login.
+- **Filtragem e Exclusão de Chamados**: O usuário pode pesquisar chamados por nome, selecionar múltiplos chamados e deletá-los.
+- **Mapa**: Cada chamado pode ser visualizado no Google Maps com base em suas coordenadas.
 
-## Project Setup
+## Estrutura do Projeto
 
-```sh
-npm install
-```
+- `src/`
+  - `assets/`: Contém os arquivos estáticos, incluindo o arquivo `tokens.json` com os tokens por cidade.
+  - `components/`: Componentes Vue que representam partes reutilizáveis da interface.
+  - `views/`: Componentes Vue que representam as páginas principais da aplicação, como o formulário de login e a lista de chamados.
+  - `domain/`: Configuração do Firebase.
+  - `App.vue`: Componente principal da aplicação.
+  - `main.js`: Arquivo de entrada que inicializa o Vue e configura os plugins e rotas.
 
-### Compile and Hot-Reload for Development
+## Configuração
 
-```sh
-npm run dev
-```
+1. **Clone o Repositório**
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+   ```bash
+   git clone https://github.com/smaartsafe/SmartSafe-SistemadeEmergencia.git
+   cd SmartSafe-SistemadeEmergencia
