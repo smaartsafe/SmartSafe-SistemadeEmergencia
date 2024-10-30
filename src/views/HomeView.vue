@@ -6,7 +6,7 @@
     </header>
 
     <main class="container">
-      <div v-if="newCallAlert" class="alert alert-warning text-center mb-4"> <span class="material-symbols-rounded">info</span> Um Novo Chamado Foi Feito</div>
+      <div v-if="newCallAlert" class="alert alert-danger justify-content-center text-center mb-4 d-flex align-items-center gap-1 "> <span class="material-symbols-rounded">info</span> Um Novo Chamado Foi Feito</div>
 
       <div class="d-flex align-items-center mb-3">
         <button v-if="!isSelecting" @click="isSelecting = true" class="btn btn-outline-primary me-3">
@@ -37,7 +37,7 @@
               </p>
               <p class="text-muted mb-1"><strong>Endereço:</strong> {{ item.local }}</p>
               <p class="text-muted mb-2"><strong>Coordenadas:</strong> {{ item.latitude }}, {{ item.longitude }}</p>
-              <button @click="openGoogleMaps(item.latitude, item.longitude)" class="btn btn-outline-success btn-sm">
+              <button @click="openGoogleMaps(item.latitude, item.longitude)" class="btn btn-outline-success btn-sm d-flex align-items-center gap-1">
                 <span class="material-symbols-rounded">map</span> Ver no mapa
               </button>
               <audio controls :src="item.audio" class="w-100 mt-3">Áudio</audio>
