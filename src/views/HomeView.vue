@@ -12,7 +12,7 @@
           <span class="material-symbols-rounded">account_circle</span> Perfil
         </button>
         <ul class="dropdown-menu" aria-labelledby="profileDropdown">
-          <li><a class="dropdown-item" href="#" @click="handleLogout">Sair</a></li>
+          <li><a class="dropdown-item d-flex align-items-center gap-2" href="#" @click="handleLogout"><span class="material-symbols-rounded">logout</span> Sair</a></li>
         </ul>
       </div>
     </header>
