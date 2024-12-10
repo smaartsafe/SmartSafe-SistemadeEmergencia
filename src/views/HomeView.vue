@@ -8,11 +8,11 @@
 
       <!-- Ícone de perfil com dropdown -->
       <div class="dropdown">
-        <button class="btn btn-outline text-white dropdown-toggle d-flex align-items-center gap-2" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-          <span class="material-symbols-rounded">account_circle</span>
+        <button class="btn btn-outline-light dropdown-toggle d-flex align-items-center gap-2" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <span class="material-symbols-rounded">account_circle</span> Perfil
         </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="profileDropdown">
-          <li><a class="dropdown-item text-danger d-flex align-items-center gap-2" href="#" @click="handleLogout"><span class="material-symbols-rounded">logout</span> Sair</a></li>
+        <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="#" @click="handleLogout">Sair</a></li>
         </ul>
       </div>
     </header>
@@ -222,7 +222,14 @@ async function deleteSelectedCalls() {
   padding: 1.5rem;
 }
 
+.btn-outline-light {
+  color: white;
+  border: 1px solid white;
+}
 
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
 /* Estilos para o dropdown */
 .dropdown-menu {
