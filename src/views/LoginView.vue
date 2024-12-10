@@ -1,16 +1,16 @@
 <template>
   <div class="d-flex justify-content-center align-items-center vh-100">
     <div class="col-md-6 col-lg-4 login">
-      <h1 class="text-center mb-4">Login de Segurança</h1>
+      <h1 class="text-center mb-4 d-flex align-items-center gap-1 justify-content-center"> <span class="material-symbols-rounded">login</span> Login de Verificação</h1>
       <form @submit.prevent="handleLogin">
         <div class="mb-3">
           <label for="email" class="form-label">Email:</label>
-          <input v-model="email" id="email" type="email" required class="form-control" />
+          <input v-model="email" id="email" type="email" required class="form-control" placeholder="Informe seu email" />
         </div>
 
         <div class="mb-3">
           <label for="password" class="form-label">Senha:</label>
-          <input v-model="password" id="password" type="password" required class="form-control" />
+          <input v-model="password" id="password" type="password" required class="form-control" placeholder="Informe sua senha" />
         </div>
 
         <div class="mb-3">
@@ -31,7 +31,7 @@
             v-model="cityToken"
             id="token"
             type="text"
-            placeholder="Digite o código"
+            placeholder="Digite o código para confirmar a cidade de atuação"
             class="form-control"
           />
         </div>
@@ -40,9 +40,10 @@
           {{ error }}
         </div>
 
-        <button type="submit" :disabled="loading" class="btn btn-primary w-100">
-          <span v-if="loading" class="spinner-border spinner-border-sm me-2"></span>
-          Entrar
+        <button type="submit" :disabled="loading" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1">
+          <span v-if="loading" class="spinner-border spinner-border-sm me-2 "></span>
+          <span v-else class="material-symbols-rounded">login</span>
+          {{ loading ? "Carregando..." : "Entrar" }}
         </button>
       </form>
     </div>
