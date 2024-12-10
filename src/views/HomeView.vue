@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100vh;">
-    <header class="d-flex justify-content-between align-items-center bg-primary text-white p-3 shadow-sm">
+    <header class="d-flex justify-content-around align-items-center bg-primary text-white p-3 shadow-sm">
       <div class="d-flex align-items-center">
         <img src="/src/assets/FundoSplash.png" alt="Logo" class="logo me-3" />
         <h1 class="h4 mb-0 fw-bold">Sistema de Chamados</h1>
