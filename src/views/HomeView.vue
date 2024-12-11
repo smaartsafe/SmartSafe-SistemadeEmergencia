@@ -32,7 +32,7 @@
           <span class="material-symbols-rounded">delete</span> Apagar Selecionadas
         </button> -->
         
-        <div class="input-group w-50">
+        <div class="input-group">
           <span class="input-group-text"><span class="material-symbols-rounded">search</span></span>
           <input v-model="searchQuery" type="text" class="form-control" placeholder="Pesquisar por chamados..." />
         </div>
@@ -105,8 +105,8 @@ const queryCalls = computed(() => {
   if (cityFilter.value) {
     return query(
       callsCollection,
-      where("local", ">=", cityFilter.value),
-      where("local", "<=", cityFilter.value + "\uf8ff"),
+      where("local", ">=", cityFilter.valueOf),
+      where("local", "<=", cityFilter.valueOf + "\uf8ff"),
       orderBy("horario", "desc")
     );
   } else {
