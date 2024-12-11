@@ -22,7 +22,6 @@
             <option value="Juazeiro do Norte">Juazeiro do Norte</option>
             <option value="Barbalha">Barbalha</option>
             <option value="Sobral">Sobral</option>
-            <option value="Fortaleza">Fortaleza</option>
             <option value="Aquiraz">Aquiraz</option>
           </select>
         </div>
