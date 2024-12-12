@@ -23,6 +23,8 @@
             <option value="Barbalha">Barbalha</option>
             <option value="Sobral">Sobral</option>
             <option value="Aquiraz">Aquiraz</option>
+            <option value="Fortaleza">Fortaleza</option>
+
           </select>
         </div>
 
