@@ -25,7 +25,7 @@
             <option value="Aquiraz">Aquiraz</option>
             <option value="Fortaleza">Fortaleza</option>
             <option value="Edson Queiroz">Edson Queiroz</option>
-
+            <option value="Guararapes">Guararapes</option>
           </select>
         </div>
 
