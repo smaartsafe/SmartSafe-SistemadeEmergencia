@@ -24,6 +24,7 @@
             <option value="Sobral">Sobral</option>
             <option value="Aquiraz">Aquiraz</option>
             <option value="Fortaleza">Fortaleza</option>
+            <option value="Edson Queiroz">Edson Queiroz</option>
 
           </select>
         </div>
